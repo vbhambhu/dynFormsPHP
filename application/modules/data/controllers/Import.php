@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Cube extends CI_Controller {
+class Import extends CI_Controller {
 
     public function __construct(){
 
@@ -54,35 +54,6 @@ class Cube extends CI_Controller {
         $data['cube'] = $cube;
 
         $this->load->backend('cubes/edit', $data);
-       
-    }
-
-
-     public function view(){
-
-        $id = $this->input->get('id');
-
-        if(!is_numeric($id) || is_null($id)){
-            show_404();
-        }
-
-        $query = $this->db->get_where('cubes', array('id' => $id), 1);
-
-        if($query->num_rows() == 0){
-            show_404();
-        }
-
-        $cube = $query->row();
-
-        $query = $this->db->get($cube->tbl_name);
-
-
-
-        $data['cube'] = $cube;
-
-        $data['cube_items'] = $query->result();
-
-        $this->load->backend('cubes/data_view', $data);
        
     }
 

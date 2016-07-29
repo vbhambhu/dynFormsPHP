@@ -24,7 +24,7 @@
         </tfoot>
         <tbody>
 
-		<?php foreach ($cubes as $cube) { ?>
+		<?php foreach ($cube_items as $item) { ?>
 			<tr>
                 <td><?php echo $cube->name; ?></td>
                 <td><?php echo $cube->description; ?></td>

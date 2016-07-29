@@ -1,5 +1,8 @@
 
-<div ng-controller="cubeCreateCtrl">
+<div ng-controller="cubeEditCtrl">
+
+
+<input type="text" value="<?php echo $cube->id; ?>" id="cube_id">
 
 
 
@@ -16,29 +19,29 @@
   
 
 </div>
-  <div class="col-md-5">
+  <div class="col-md-6">
 <h3>Design</h3>
 <hr>
 
-      <div id="project_details" data-toggle="modal" data-target="#myModal">
-      <h1 id="titleLabel">{{project.title}}</h1>
-      <p id="descriptionLabel">{{project.description}}</p>
+      <div id="cube_details" data-toggle="modal" data-target="#myModal">
+      <h1 id="titleLabel">{{cube.name}}</h1>
+      <p id="descriptionLabel">{{cube.description}}</p>
       </div>
 
-      <div class="well" ng-repeat="field in project.fields">
+      <div class="well" ng-repeat="field in cube.attributes">
         <field-directive field="field"></field-directive>
       </div>
 </div>
-<div class="col-md-5">
+<div class="col-md-4">
 
 <h3>Preview</h3>
 <hr>
-<code>{{project}}</code>
+<code>{{cube}}</code>
 
-<h3 id="titleLabel">{{project.title}}</h3>
-        <p id="descriptionLabel">{{project.description}}</p>
+<h3 id="titleLabel">{{cube.name}}</h3>
+        <p id="descriptionLabel">{{cube.description}}</p>
         <hr>
-        <div ng-repeat="field in project.fields">
+        <div ng-repeat="field in cube.attributes">
         <preview-directive field="field"></preview-directive>
         </div>
 
@@ -70,18 +73,18 @@
       <div class="modal-body">
 
         <div class="form-group">
-          <label for="proejctTitle">Project title</label>
-          <input type="text" class="form-control" ng-model="project.title" value="Hello, world!">
+          <label for="proejctTitle">Cube title</label>
+          <input type="text" class="form-control" ng-model="cube.name" value="Hello, world!">
         </div>
 
         <div class="form-group">
-          <label for="proejctDescription">Project description</label>
-          <textarea class="form-control" rows="3" ng-model="project.description">Descriptiton</textarea>
+          <label for="proejctDescription">Cube description</label>
+          <textarea class="form-control" rows="3" ng-model="cube.description">Descriptiton</textarea>
         </div>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">Done</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="saveCube()">Done</button>
       </div>
     </div>
   </div>

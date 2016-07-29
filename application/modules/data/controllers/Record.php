@@ -1,10 +1,13 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Cube extends CI_Controller {
+class Record extends CI_Controller {
 
     public function __construct(){
 
         parent::__construct();
+
+
+        $this->load->library('form');
 
         // if(!$this->session->userdata('user_id')){
         //     redirect('account/login');
@@ -14,9 +17,33 @@ class Cube extends CI_Controller {
 
     public function index(){
 
-        $data['cubes'] = $this->db->get('cubes')->result();
 
-        $this->load->backend('cubes/list', $data);
+        $query = $this->db->get_where('cube_attributes', array('cube_id' => 1));
+
+        $this->form->open('/data/record?id=1')
+        ->hidden('cube_id', 1);
+        //->text('username','Username', 'trim|required|max_length[60]')
+        //->password('password','Password', 'trim|required|max_length[100]')
+
+        foreach ($query->result() as $row) {
+            
+            if($row->type == 'text'){
+                $this->form->text($row->identifier,$row->label, 'trim|required|max_length[60]');
+            }
+
+        }
+
+
+
+        $this->form->submit('Save')
+        ->add_class('btn btn-success')
+        ->onsuccess('redirect', '/data/record?id=1')
+        ->model('record_model', 'save_data');
+
+        $data['form'] = $this->form->get();
+        $data['errors'] = $this->form->errors;
+
+        $this->load->backend('form/insert', $data);
        
     }
 
@@ -54,35 +81,6 @@ class Cube extends CI_Controller {
         $data['cube'] = $cube;
 
         $this->load->backend('cubes/edit', $data);
-       
-    }
-
-
-     public function view(){
-
-        $id = $this->input->get('id');
-
-        if(!is_numeric($id) || is_null($id)){
-            show_404();
-        }
-
-        $query = $this->db->get_where('cubes', array('id' => $id), 1);
-
-        if($query->num_rows() == 0){
-            show_404();
-        }
-
-        $cube = $query->row();
-
-        $query = $this->db->get($cube->tbl_name);
-
-
-
-        $data['cube'] = $cube;
-
-        $data['cube_items'] = $query->result();
-
-        $this->load->backend('cubes/data_view', $data);
        
     }
 

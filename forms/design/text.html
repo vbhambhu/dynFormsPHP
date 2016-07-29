@@ -1,4 +1,6 @@
-{{field.title}}
+{{field}}
+
+{{field.label}}
 <br>
 
 <button class="btn btn-default" data-toggle="modal" data-target="#fieldEdit_{{field.id}}">Edit</button>
@@ -23,26 +25,26 @@
 <!-- Start -->
         <div class="form-group">
           <label>Field label</label>
-          <input type="text" class="form-control" maxlength="50" ng-model="field.title">
+          <input type="text" class="form-control" maxlength="50" ng-model="field.label">
           <small class="text-muted">Maximum length 50 charactrs.</small>
         </div>
 
 
         <div class="form-group">
           <label>Defualt value</label>
-          <input type="text" class="form-control" ng-model="field.value">
+          <input type="text" class="form-control" ng-model="field.default_value">
         </div>
 
 		<div class="checkbox">
 		<label>
-		<input type="checkbox" ng-model="field.required"> Required?
+		<input type="checkbox" ng-model="field.is_required"> Required?
 		</label>
 		</div>
 
 
 		<div class="checkbox">
 		<label>
-		<input type="checkbox" ng-model="field.validation.status" ng-change="updateValidation(field)"> Validation required?
+		<input type="checkbox" ng-model="field.validation"> Validation required?
 		</label>
 		</div>
 
@@ -100,14 +102,14 @@
 
 		<div class="form-group">
           <label>Help text (optional)</label>
-          <textarea class="form-control" rows="3" ng-model="field.helpText"></textarea>
+          <textarea class="form-control" rows="3" ng-model="field.help_text"></textarea>
         </div>
         <!-- end -->
 
         
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">Done</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="saveCube()">Done</button>
       </div>
     </div>
   </div>

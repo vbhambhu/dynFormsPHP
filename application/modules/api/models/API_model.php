@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 
-class Docs_model extends CI_Model{
+class API_model extends CI_Model{
 
 	private $doc_tbl = 'documents';
 	private $doc_log_tbl = 'document_logs';

@@ -20,7 +20,9 @@
 
 
 <?php echo anchor('/','Home', array('class'=>'nav-link') ); ?> | 
-<?php echo anchor('data/collection','Collections', array('class'=>'nav-link') ); ?> | 
+<?php echo anchor('data/import','Import', array('class'=>'nav-link') ); ?> | 
+<?php echo anchor('data/view','Data view', array('class'=>'nav-link') ); ?> | 
+<?php echo anchor('data/analyse','Data analyse', array('class'=>'nav-link') ); ?> | 
 <?php echo anchor('data/cube','Cubes', array('class'=>'nav-link') ); ?>
 
 <hr>

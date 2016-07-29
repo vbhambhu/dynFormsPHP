@@ -3,31 +3,77 @@
 var app = angular.module('dynForm', []);
 
 
-app.controller('cubeCreateCtrl', function($scope) {
 
-    $scope.project = {title:"Cube title", description:"Cube description"};
-    $scope.project.fields = [];
+app.controller('cubeEditCtrl', function($scope,$http) {
 
-    $scope.addField = {};
-    $scope.addField.lastAddedID = 0;
+  var cubeId = document.getElementById('cube_id').value;
+
+    $scope.cube = {};
+
+    $http.get('/api/cube_by_id', 
+    { params: { id : cubeId }}).then(function successCallback(response) {
+
+   // console.log(response);
+
+      $scope.cube.id = response.data.id;
+      $scope.cube.name = response.data.name;
+      $scope.cube.description = response.data.description;
+      $scope.cube.attributes = response.data.attributes;
+
+      $scope.lastAddedID = response.data.attributes.length;
+
+    }, function errorCallback(response) {
+    // called asynchronously if an error occurs
+    // or server returns response with an error status.
+    });
+
+
+    $scope.saveCube = function () {
+
+      console.log(angular.copy($scope.cube));
+
+      $http({
+        method: 'POST',
+        url: '/api/save_cube',
+        data: $.param({cube: angular.copy($scope.cube) }),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function(response) {
+       console.log(response);
+
+    });
+
+
+    }
+
+
+
+
+    
 
     $scope.addItem = function (iType) {
 
-      $scope.addField.lastAddedID++;
+      $scope.lastAddedID++;
 
       var newField = {
-            "id" : $scope.addField.lastAddedID,
-            "title" : "New field - " + $scope.addField.lastAddedID,
+            "id" : $scope.lastAddedID,
+            "identifier" : guid(),
+            "label" : "New field - " + $scope.lastAddedID,
             "type" : iType,
-            "value" : "",
-            "required" : true
+            "is_required" : true,
+            "default_value" : null,
+            "help_text" :null,
+            "validation" :false,
+            "validation_rule" :null,
+            "validation_rule" : $scope.cube.id
       };
 
       if(iType == "multiple" || iType == "check" || iType == "select"){
         newField.options = [{id:1,title:"Option 1", pos:"1"}, {id:2,title:"Option 2", pos:"2"}, {id:3,title:"Option 3", pos:"3"}];
       }
 
-      $scope.project.fields.push(newField);
+      $scope.cube.attributes.push(newField);
+
+      $scope.saveCube();
     }
 
 
@@ -44,15 +90,18 @@ app.controller('cubeCreateCtrl', function($scope) {
   //deletes particular field on button click
     $scope.deleteField = function (field){
 
-      field_id = field.id;
+      att_id = field.id;
 
       //alert(field_id); return;
-        for(var i = 0; i < $scope.project.fields.length; i++){
-            if($scope.project.fields[i].id == field_id){
-                $scope.project.fields.splice(i, 1);
+        for(var i = 0; i < $scope.cube.attributes.length; i++){
+            if($scope.cube.attributes[i].id == att_id){
+                $scope.cube.attributes.splice(i, 1);
                 break;
             }
         }
+
+      $scope.saveCube();
+
     }
 
 
@@ -154,3 +203,13 @@ app.directive('previewDirective', function($http, $compile) {
     };
 
 });
+
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4();
+}
