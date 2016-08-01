@@ -45,9 +45,29 @@ class API extends REST_Controller {
         );
 
         $query = $this->db->get_where('cube_attributes', array('cube_id' => $id));
+    
+        //echo '<pre>'; print_r($result['attributes']);
 
+        $attributes = array();
 
-        $result['attributes'] = $query->result_array();
+        foreach ($query->result() as $row) {
+           $attributes[] = array(
+            'id' => $row->id,
+            'identifier' => $row->identifier,
+            'label' => $row->label,
+            'type' => $row->type,
+            'is_required' => ($row->is_required == 1) ? true : false,
+            'default_value' => $row->default_value,
+            'options' => json_decode($row->options), 
+            'help_text' => $row->help_text,
+            'validation' => $row->validation,
+            'validation_rule' => $row->validation_rule,
+            'cube_id' => $row->cube_id
+            );
+        }
+
+        $result['attributes'] = $attributes;
+
         $this->set_response( $result, REST_Controller::HTTP_OK);
     }
 
@@ -77,16 +97,24 @@ class API extends REST_Controller {
 
             foreach ($attributes as $key => $value) {
 
+                $validation_rules = array();
+
+                if($value['is_required'] == 'true'){
+                    $validation_rules[] = 'required';
+                }
+
+
                 $attribute = array(
                     'id' => $att_id, 
                     'identifier' => $value['identifier'], 
                     'label' => $value['label'], 
                     'type' => $value['type'], 
-                    'is_required' => ($value['is_required']) ? 1 : 0, 
-                    'default_value' => $value['default_value'], 
+                    'is_required' => ($value['is_required'] == 'true') ? 1 : 0, 
+                    'default_value' => $value['default_value'],
+                    'options' => json_encode($value['options']), 
                     'help_text' => $value['help_text'], 
                     'validation' => $value['validation'], 
-                    'validation_rule' => $value['validation_rule'], 
+                    'validation_rule' => implode("|", $validation_rules), 
                     'cube_id' =>  $cube['id']
                 );
 

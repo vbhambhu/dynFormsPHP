@@ -1,7 +1,8 @@
 <div class="wellx">
   <div class="form-group">
-  <label ng-bind="field.title">{{field.title}}</label>
-  <textarea class="form-control" rows="3" disabled></textarea>
+  <label>{{field.label}} {{field.id}} {{field.required ? "*" : ""}}</label> 
+  <textarea class="form-control" rows="3" disabled>{{field.default_value}}</textarea>
+  <small class="text-muted">{{field.help_text}}</small>
 </div>
 
 
@@ -22,19 +23,12 @@
 
         <div class="form-group">
           <label>Field label</label>
-          <input type="text" class="form-control" ng-model="field.title" value="Hello, world!">
+          <input type="text" class="form-control" ng-model="field.label" value="Hello, world!">
         </div>
 
     <div class="checkbox">
     <label>
     <input type="checkbox" ng-model="field.required"> Required?
-    </label>
-    </div>
-
-
-    <div class="checkbox">
-    <label>
-    <input type="checkbox" ng-model="field.disabled"> Disabled?
     </label>
     </div>
 
@@ -53,9 +47,14 @@
 
 
     
-    <div class="form-group">
+      <div class="form-group">
+           <label>Defualt value</label>
+          <textarea class="form-control" rows="3" ng-model="field.default_value"></textarea>
+        </div>
+
+             <div class="form-group">
           <label>Help text (optional)</label>
-          <textarea class="form-control" rows="3" ng-model="field.helpText"></textarea>
+          <textarea class="form-control" rows="3" ng-model="field.help_text"></textarea>
         </div>
 
 
@@ -66,7 +65,7 @@
         
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">Done</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="saveCube()">Done</button>
       </div>
     </div>
   </div>

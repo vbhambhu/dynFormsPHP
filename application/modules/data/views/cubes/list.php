@@ -31,7 +31,9 @@
                 <td>23</td>
                 <td>Vinod Kumar</td>
                 <td><?php echo $cube->created_at; ?></td>
-                <td><?php echo anchor('/data/cube/view?id='.$cube->id , 'view'); ?> | <?php echo anchor('/data/cube/edit?id='.$cube->id , 'edit'); ?></td>
+                <td><?php echo anchor('/data/record?id='.$cube->id , 'record'); ?> | <?php echo anchor('/data/cube/edit?id='.$cube->id , 'edit'); ?>
+                    | <?php echo anchor('/data/cube/edit?id='.$cube->id , 'edit'); ?>
+                </td>
             </tr>
 		<?php } ?>
         </tbody>

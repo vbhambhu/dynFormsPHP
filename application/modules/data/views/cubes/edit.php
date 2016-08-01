@@ -2,7 +2,7 @@
 <div ng-controller="cubeEditCtrl">
 
 
-<input type="text" value="<?php echo $cube->id; ?>" id="cube_id">
+<input type="hidden" value="<?php echo $cube->id; ?>" id="cube_id">
 
 
 
@@ -16,6 +16,7 @@
   <p><button class="btn btn-primary btn-block" ng-click="addItem('select')">Dropdown list</button></p>
   <p><button class="btn btn-primary btn-block" ng-click="addItem('upload')">File upload</button></p>
   <p><button class="btn btn-primary btn-block" ng-click="addItem('content')">Content block</button></p>
+  <p><button class="btn btn-primary btn-block" ng-click="addItem('content')">Cube relationship</button></p>
   
 
 </div>
@@ -36,7 +37,7 @@
 
 <h3>Preview</h3>
 <hr>
-<code>{{cube}}</code>
+
 
 <h3 id="titleLabel">{{cube.name}}</h3>
         <p id="descriptionLabel">{{cube.description}}</p>

@@ -1,4 +1,3 @@
-
 //Anguar app
 var app = angular.module('dynForm', []);
 
@@ -19,7 +18,6 @@ app.controller('cubeEditCtrl', function($scope,$http) {
       $scope.cube.name = response.data.name;
       $scope.cube.description = response.data.description;
       $scope.cube.attributes = response.data.attributes;
-
       $scope.lastAddedID = response.data.attributes.length;
 
     }, function errorCallback(response) {

@@ -1,6 +1,6 @@
 <div class="wellx">
 	<div class="form-group">
-	<label ng-bind="field.value" ng-init="field.value='Add some content here.'">{{field.value}}</label>
+	<label ng-bind="field.default_value">{{field.default_value}}</label>
 </div>
 
 
@@ -18,12 +18,12 @@
         <!-- Start -->
         <div class="form-group">
         <label>Content</label>
-        <textarea class="form-control" rows="3" ng-model="field.value"></textarea>
+        <textarea class="form-control" rows="3" ng-model="field.default_value"></textarea>
         </div>
         <!-- end -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">Done</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="saveCube()">Done</button>
       </div>
     </div>
   </div>

@@ -17,18 +17,34 @@ class Record extends CI_Controller {
 
     public function index(){
 
+        $id = $this->input->get('id');
 
-        $query = $this->db->get_where('cube_attributes', array('cube_id' => 1));
+        if(!is_numeric($id) || is_null($id)){
+            show_404();
+        }
+
+        $query = $this->db->get_where('cubes', array('id' => $id), 1);
+
+        if($query->num_rows() == 0){
+            show_404();
+        }
+
+        $cube = $query->row();
+
+
+        $query = $this->db->get_where('cube_attributes', array('cube_id' => $cube->id));
 
         $this->form->open('/data/record?id=1')
-        ->hidden('cube_id', 1);
+        ->hidden('cube_id', 1)
+        ->html('<h3>'.$cube->name.'</h3>')
+        ->html($cube->description.'<hr>');
         //->text('username','Username', 'trim|required|max_length[60]')
         //->password('password','Password', 'trim|required|max_length[100]')
 
         foreach ($query->result() as $row) {
             
             if($row->type == 'text'){
-                $this->form->text($row->identifier,$row->label, 'trim|required|max_length[60]');
+                $this->form->text($row->identifier,$row->label, $row->validation_rule);
             }
 
         }
