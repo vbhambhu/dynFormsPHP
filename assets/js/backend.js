@@ -1,3 +1,35 @@
+$.fn.exists = function(callback) {
+  var args = [].slice.call(arguments, 1);
+
+  if (this.length) {
+    callback.call(this, args);
+  }
+  return this;
+};
+
+$('#datatable').exists(function() {
+
+//var controller = $(this).attr("src");
+
+var nosort = $(this).attr("nosort").split("-");
+var def = new Array;
+for (i = 0; i < nosort.length; i++) { 
+  var jsn = { orderable: false, targets: parseInt(nosort[i]) };
+    def.push(jsn);
+}
+
+$('#datatable').dataTable({
+"processing": true,
+"serverSide": true,
+"ajax": "/form/datatable",
+//"columnDefs": def
+//"columnDefs": [{ orderable: false, targets: -1 }]
+});
+});
+
+
+
+
 //Anguar app
 var app = angular.module('dynForm', []);
 

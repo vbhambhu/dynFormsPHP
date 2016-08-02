@@ -6,15 +6,6 @@ class Record_model extends CI_Model{
 	private $log_tbl = 'document_logs';
 
 
-	public function test(){
-
-		//$post = $this->form->get_post();
-
-		print_r($_POST);
-
-	}
-
-
 	public function save_data(){
 
 		$post = $this->form->get_post();

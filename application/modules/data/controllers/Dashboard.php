@@ -11,12 +11,27 @@ class Dashboard extends CI_Controller {
         if(!$this->session->userdata('user_id')){
             redirect('account/login');
         }
+
+        $this->load->library('form');
     }
 
     public function index(){
 
+
+        $this->form->open();
+        $this->form->text("username",'Username','required','', array('id' => 'hello', 'class' => 'world'));
+        $this->form->text("password",'Password','required');
+
+        $this->form->submit('Save');
+       
+        //$this->form->onsuccess('redirect', 'docs')
+        $this->form->model('Record_model', 'test');
+
+    
+        $data['form'] = $this->form->get();
+
         $data['meta_title'] = 'Dashboard';
-        $this->load->backend('dashboard', $data);
+        $this->load->frontend('dashboard', $data);
        
     }
 
