@@ -20,8 +20,6 @@ class Form extends CI_Controller {
 
         $data['meta_title'] = "Forms";
 
-
-
         $data['js_foot'] = array('jquery.dataTables.min', 'dataTables.bootstrap4.min');
 
         $this->load->frontend('list', $data);
@@ -115,41 +113,50 @@ class Form extends CI_Controller {
   }
 
 
-
-
     public function create(){
 
-        $new_cube = array(
+        $slug = uniqid();
+
+        $new_form = array(
+            'slug' => $slug,
             'name' => 'Untitled',
             'description' => 'Write description here ...',
+            'owner' => $this->session->userdata('user_id'),
             'created_at' => date('Y-m-d H:i:s')
         );
 
-        $this->db->insert('cubes', $new_cube);
+        $this->db->insert('forms', $new_form);
 
         $id = $this->db->insert_id();
-        redirect('data/cube/edit?id='.$id);
+        redirect('form/edit/'.$slug);
 
     }
 
      public function edit(){
 
-        $id = $this->input->get('id');
+        //$slug = $this->input->get('id');
 
-        if(!is_numeric($id) || is_null($id)){
+        $slug = $this->uri->segment(3);
+
+        if(is_null($slug)){
             show_404();
         }
 
-        $query = $this->db->get_where('cubes', array('id' => $id), 1);
+        $query = $this->db->get_where('forms', array('slug' => $slug), 1);
 
         if($query->num_rows() == 0){
             show_404();
         }
 
-        $cube = $query->row();
-        $data['cube'] = $cube;
+        $form = $query->row();
 
-        $this->load->backend('cubes/edit', $data);
+
+       // echo $this->db->count_all($form->tbl_name);
+
+
+        $data['form'] = $form;
+
+        $this->load->frontend('edit', $data);
        
     }
 

@@ -1,4 +1,4 @@
-<?php echo anchor('data/cube/create','Create new', array('class' => 'btn btn-success btn-sm')); ?>
+<?php echo anchor('form/create','Create new', array('class' => 'btn btn-success btn-sm')); ?>
 <br><br>
 
 <table id="datatable" class="table table-striped table-bordered" nosort="6" cellspacing="0" width="100%">
@@ -33,7 +33,7 @@
                 <td><?php echo $form->created_at; ?></td>
                 <td>
                 <?php echo anchor('/record?id='.$form->id , 'record'); ?> | 
-                <?php echo anchor('/form/edit?id='.$form->id , 'edit'); ?> | 
+                <?php echo anchor('/form/edit/'.$form->slug , 'edit'); ?> | 
                 <?php echo anchor('/form/data?id='.$form->id , 'data'); ?>
                 </td>
             </tr>

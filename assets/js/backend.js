@@ -7,7 +7,7 @@ $.fn.exists = function(callback) {
   return this;
 };
 
-$('#datatable').exists(function() {
+$('#datatabssle').exists(function() {
 
 //var controller = $(this).attr("src");
 
@@ -37,20 +37,20 @@ var app = angular.module('dynForm', []);
 
 app.controller('cubeEditCtrl', function($scope,$http) {
 
-  var cubeId = document.getElementById('cube_id').value;
+  var fromId = document.getElementById('form_id').value;
 
-    $scope.cube = {};
+    $scope.form = {};
 
-    $http.get('/api/cube_by_id', 
-    { params: { id : cubeId }}).then(function successCallback(response) {
+    $http.get('/api/form/searchById', 
+    { params: { id : fromId }}).then(function successCallback(response) {
 
-   // console.log(response);
+    console.log(response);
 
-      $scope.cube.id = response.data.id;
-      $scope.cube.name = response.data.name;
-      $scope.cube.description = response.data.description;
-      $scope.cube.attributes = response.data.attributes;
-      $scope.lastAddedID = response.data.attributes.length;
+      $scope.form.id = response.data.id;
+      $scope.form.name = response.data.name;
+      $scope.form.description = response.data.description;
+      $scope.form.fields = response.data.fields;
+      $scope.lastAddedID = response.data.fields.length;
 
     }, function errorCallback(response) {
     // called asynchronously if an error occurs
@@ -58,7 +58,7 @@ app.controller('cubeEditCtrl', function($scope,$http) {
     });
 
 
-    $scope.saveCube = function () {
+    $scope.saveForm = function () {
 
       console.log(angular.copy($scope.cube));
 
