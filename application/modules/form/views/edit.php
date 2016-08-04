@@ -1,6 +1,6 @@
 
-<div ng-controller="cubeEditCtrl">
-
+<div ng-controller="formEditCtrl">
+{{form}}
 
 <input type="hidden" value="<?php echo $form->id; ?>" id="form_id">
 
@@ -29,7 +29,7 @@
       <p id="descriptionLabel">{{form.description}}</p>
       </div>
 
-      <div class="well" ng-repeat="field in cube.attributes">
+      <div class="well" ng-repeat="field in form.fields">
         <field-directive field="field"></field-directive>
       </div>
 </div>

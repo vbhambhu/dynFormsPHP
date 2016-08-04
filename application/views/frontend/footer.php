@@ -17,7 +17,7 @@
 <script type="text/javascript" src="<?php echo base_url('assets/js/'.trim($js_foot_file).'.js'); ?>"></script>
 <?php } ?>
 <?php } ?>
-<script type="text/javascript" src="/assets/js/backend.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
 <!-- // javascripts -->
 </body>
 </html>

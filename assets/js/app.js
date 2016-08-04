@@ -8,7 +8,6 @@ $.fn.exists = function(callback) {
 };
 
 $('#datatabssle').exists(function() {
-
 //var controller = $(this).attr("src");
 
 var nosort = $(this).attr("nosort").split("-");
@@ -33,9 +32,7 @@ $('#datatable').dataTable({
 //Anguar app
 var app = angular.module('dynForm', []);
 
-
-
-app.controller('cubeEditCtrl', function($scope,$http) {
+app.controller('formEditCtrl', function($scope,$http) {
 
   var fromId = document.getElementById('form_id').value;
 
@@ -51,6 +48,9 @@ app.controller('cubeEditCtrl', function($scope,$http) {
       $scope.form.description = response.data.description;
       $scope.form.fields = response.data.fields;
       $scope.lastAddedID = response.data.fields.length;
+      
+
+      $scope.createValidationArray();
 
     }, function errorCallback(response) {
     // called asynchronously if an error occurs
@@ -58,14 +58,63 @@ app.controller('cubeEditCtrl', function($scope,$http) {
     });
 
 
+    $scope.createValidationArray = function () {
+
+
+     // if(!field.validation_array)
+
+      for(var i = 0; i < $scope.form.fields.length; i++){
+
+          var validation_array = new Array();
+          var rule = $scope.form.fields[i].validation_rule;
+          var ruleArr = rule.split("|");
+
+          $scope.form.fields[i].validation = [];
+
+          for(key in ruleArr){
+             if(ruleArr[key].includes("[")){
+              
+              var key1 = ruleArr[key].substring(0,ruleArr[key].lastIndexOf("["));
+              var val = ruleArr[key].substring(ruleArr[key].lastIndexOf("[")+1,ruleArr[key].lastIndexOf("]"));
+              validation_array.push({"rule": key1, 'value': val});
+              $scope.form.fields[i].validation[key1] = true;
+
+              //console.log(ruleArr[key].lastIndexOf("["));
+                
+             } else {
+                if(ruleArr[key] != "required" ){
+                  validation_array.push({"rule": ruleArr[key]});
+                  var tt = ruleArr[key];
+                   $scope.form.fields[i].validation[tt] = true;
+                }
+                
+             }
+          }
+
+          console.log(validation_array);
+
+
+          //$scope.form.fields[i].validation = {};
+          //$scope.form.validation = ruleArr[key];
+
+
+          $scope.form.fields[i].validation_array = validation_array;
+
+         
+      }
+
+
+    }
+
+
     $scope.saveForm = function () {
 
-      console.log(angular.copy($scope.cube));
+      console.log(angular.copy($scope.form));
 
       $http({
         method: 'POST',
-        url: '/api/save_cube',
-        data: $.param({cube: angular.copy($scope.cube) }),
+        url: '/api/form/save',
+        data: $.param({form: angular.copy($scope.form) }),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).then(function(response) {
        console.log(response);
@@ -94,27 +143,27 @@ app.controller('cubeEditCtrl', function($scope,$http) {
             "help_text" :null,
             "validation" :false,
             "validation_rule" :null,
-            "validation_rule" : $scope.cube.id
+            "validation_rule" : $scope.form.id
       };
 
       if(iType == "multiple" || iType == "check" || iType == "select"){
         newField.options = [{id:1,title:"Option 1", pos:"1"}, {id:2,title:"Option 2", pos:"2"}, {id:3,title:"Option 3", pos:"3"}];
       }
 
-      $scope.cube.attributes.push(newField);
+      $scope.form.fields.push(newField);
 
-      $scope.saveCube();
+      $scope.saveForm();
     }
 
 
-    $scope.updateValidation = function (field){
+    // $scope.updateValidation = function (field){
 
-      if(field.validation.status == false){
-        delete field.validation;
-        field.validation = {status: false};
-      }
+    //   if(field.validation.status == false){
+    //     delete field.validation;
+    //     field.validation = {status: false};
+    //   }
 
-    }
+    // }
 
 
   //deletes particular field on button click
@@ -123,14 +172,14 @@ app.controller('cubeEditCtrl', function($scope,$http) {
       att_id = field.id;
 
       //alert(field_id); return;
-        for(var i = 0; i < $scope.cube.attributes.length; i++){
-            if($scope.cube.attributes[i].id == att_id){
-                $scope.cube.attributes.splice(i, 1);
+        for(var i = 0; i < $scope.form.fields.length; i++){
+            if($scope.form.fields[i].id == att_id){
+                $scope.form.fields.splice(i, 1);
                 break;
             }
         }
 
-      $scope.saveCube();
+      $scope.saveForm();
 
     }
 
@@ -146,6 +195,42 @@ app.controller('cubeEditCtrl', function($scope,$http) {
             }
         }
     }
+
+    $scope.updateValidation = function (field){
+
+       if(!field.validation_array)
+            field.validation_array = new Array();
+
+      if("min_length" in field.validation){
+
+         var newField = {
+            "rule" : "min_length",
+            "value" : 50
+        };
+
+        if(field.validation.min_length){
+          field.validation_array.push(newField);
+        } else{
+
+          //delete field.validation["min_length"];
+          //field.validation_array.splice(i, 1);
+        }
+
+        
+      }
+      console.log(field.validation);
+      
+
+       for(var i = 0; i < field.validation.length; i++){
+
+        console.log(field.validation[i]);
+            
+        }
+       
+    }
+
+
+    
 
 
     // add new option to the field

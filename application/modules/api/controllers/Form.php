@@ -60,7 +60,6 @@ class Form extends REST_Controller {
             'default_value' => $row->default_value,
             'options' => json_decode($row->options), 
             'help_text' => $row->help_text,
-            'validation' => $row->validation,
             'validation_rule' => $row->validation_rule,
             'form_id' => $row->form_id
             );
@@ -73,29 +72,29 @@ class Form extends REST_Controller {
 
 
 
-    public function save_cube_post(){
+    public function save_post(){
 
-        if( $this->post("cube")) {
+        if($this->post("form")) {
 
-            $cube = $this->post("cube");
+            $form = $this->post("form");
 
-            $new_cube = array(
-                'name' => $cube['name'],
-                'description' => $cube['description'],
+            $new_form = array(
+                'name' => $form['name'],
+                'description' => $form['description'],
             );
 
-            $this->db->where('id', $cube['id'] );
-            $this->db->update('cubes', $new_cube);
+            $this->db->where('id', $form['id'] );
+            $this->db->update('forms', $new_form);
 
 
-            $this->db->where('cube_id', $cube['id'] );
-            $this->db->delete('cube_attributes');
+            $this->db->where('form_id', $form['id'] );
+            $this->db->delete('fields');
 
-            $attributes = $cube['attributes'];
+            $fields = $form['fields'];
 
             $att_id = 1;
 
-            foreach ($attributes as $key => $value) {
+            foreach ($fields as $key => $value) {
 
                 $validation_rules = array();
 
@@ -104,31 +103,24 @@ class Form extends REST_Controller {
                 }
 
 
-                $attribute = array(
+                $field = array(
                     'id' => $att_id, 
                     'identifier' => $value['identifier'], 
                     'label' => $value['label'], 
                     'type' => $value['type'], 
                     'is_required' => ($value['is_required'] == 'true') ? 1 : 0, 
                     'default_value' => $value['default_value'],
-                    'options' => json_encode($value['options']), 
-                    'help_text' => $value['help_text'], 
-                    'validation' => $value['validation'], 
+                    'options' => (isset($value['options'])) ? json_encode($value['options']) : NULL, 
+                    'help_text' => $value['help_text'],
                     'validation_rule' => implode("|", $validation_rules), 
-                    'cube_id' =>  $cube['id']
+                    'form_id' =>  $form['id']
                 );
 
-
-                $this->db->insert('cube_attributes', $attribute);
+                $this->db->insert('fields', $field);
 
                 $att_id++;
                 
             }
-
-
-
-
-
 
 
 

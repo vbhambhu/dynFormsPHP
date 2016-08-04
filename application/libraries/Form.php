@@ -5,10 +5,13 @@ class Form {
 
 
 	private $form_html;
+	private $open_parms;
 	private $errors;
 	private $validated = FALSE;
 	private $validation_rules = array();
 	private $fields = array();
+	private $hidden = array();
+	
 
 	public function __construct(){
            
@@ -17,8 +20,10 @@ class Form {
 
     }
 
-	public function open($action = FALSE, $attributes=array(), $hidden=array()){
-		$this->form_open = form_open($action, $attributes, $hidden);
+	public function open($action = FALSE, $attributes=array()){
+		
+		$this->open_parms = array('action' => $action, 'attributes' => $attributes);
+		//form_open($action, $attributes, $hidden);
     }
 
     public function text($name, $label='', $rules = null, $value = null, $atts = array() ) {
@@ -30,7 +35,87 @@ class Form {
 		//add validation to array
 		if(!is_null($rules))
 		$this->validation_rules[] = array('field' => $name,'label' => $label,'rules' => $rules);
-		$this->fields[] = array('name' => $name, 'html' => form_input($atts));
+
+		$html = form_label($label, $name);
+		$html .= form_input($atts);
+
+		$this->fields[] = array('name' => $name, 'html' => $html);
+		return $this;
+    }
+
+    public function textarea($name, $label='', $rules = null, $value = null, $atts = array() ) {
+
+    	$atts['name'] = $name;
+    	$atts['value'] = ($this->CI->input->post($name)) ? set_value($name) : $value;
+    	$atts['class'] = (isset($atts['class'])) ?  $atts['class'] . ' form-control' : 'form-control';
+
+		//add validation to array
+		if(!is_null($rules))
+		$this->validation_rules[] = array('field' => $name,'label' => $label,'rules' => $rules);
+
+		$html = form_label($label, $name);
+		$html .= form_textarea($atts);
+
+		$this->fields[] = array('name' => $name, 'html' => $html);
+		return $this;
+    }
+
+     public function radio($name, $label='', $options = array(),$rules = null , $atts = array()) {
+
+
+     	//form_radio([$data = ''[, $value = ''[, $checked = FALSE[, $extra = '']]]])
+
+    	$atts['name'] = $name;
+    	//$atts['value'] = ($this->CI->input->post($name)) ? set_value($name) : $value;
+    	$atts['class'] = (isset($atts['class'])) ?  $atts['class'] . ' form-control' : 'form-control';
+
+		//add validation to array
+		if(!is_null($rules))
+		$this->validation_rules[] = array('field' => $name,'label' => $label,'rules' => $rules);
+
+
+		$html = '<p>'.form_label($label, $name).'</p>';
+
+		foreach ($options as $key => $value) {
+			$data = array('name' => $name,'value' => $key);
+			$html .= '<div class="radio"><label>';
+			$html .= form_radio($data);
+			$html .= $value;
+			$html .= '</label></div>';
+		}
+		
+
+		$this->fields[] = array('name' => $name, 'html' => $html);
+		return $this;
+    }
+
+
+    public function form_checkbox($name, $label='', $options = array(),$rules = null , $atts = array()) {
+
+
+     	//form_radio([$data = ''[, $value = ''[, $checked = FALSE[, $extra = '']]]])
+
+    	$atts['name'] = $name;
+    	//$atts['value'] = ($this->CI->input->post($name)) ? set_value($name) : $value;
+    	$atts['class'] = (isset($atts['class'])) ?  $atts['class'] . ' form-control' : 'form-control';
+
+		//add validation to array
+		if(!is_null($rules))
+		$this->validation_rules[] = array('field' => $name,'label' => $label,'rules' => $rules);
+
+
+		$html = '<p>'.form_label($label, $name).'</p>';
+
+		foreach ($options as $key => $value) {
+			$data = array('name' => $name,'value' => $key);
+			$html .= '<div class="radio"><label>';
+			$html .= form_checkbox($data);
+			$html .= $value;
+			$html .= '</label></div>';
+		}
+		
+
+		$this->fields[] = array('name' => $name, 'html' => $html);
 		return $this;
     }
 
@@ -60,8 +145,7 @@ class Form {
 
     public function get(){
 
-
-    	$this->form_html = $this->form_open;
+    	$this->form_html = form_open($this->open_parms['action'], $this->open_parms['attributes'], $this->hidden);
 
 		if (!$this->validated) $this->validate();
 
@@ -74,13 +158,14 @@ class Form {
 
 		$this->form_html .= $this->form_submit;
 		$this->form_html .=form_close();
-
-
-
 		return $this->form_html;
 
 
     }
+
+    public function hidden($name, $value='') {
+		$this->hidden[$name] = $value;
+	}
 
 
     public function submit($value='Submit', $name='submit', $atts=array()) {
@@ -103,6 +188,10 @@ class Form {
 		);
 		
 		return $this;
+	}
+
+	public function get_post(){
+		return $this->CI->input->post();
 	}
 
 

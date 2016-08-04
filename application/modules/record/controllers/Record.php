@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Form extends CI_Controller {
+class Record extends CI_Controller {
 
     public function __construct(){
 
@@ -12,17 +12,65 @@ class Form extends CI_Controller {
 
     }
 
-    public function index(){
+    public function entry(){
 
-        $this->load->library('Datatables');
 
-        $data['forms'] = $this->db->get('forms')->result();
+        $slug = $this->uri->segment(3);
 
-        $data['meta_title'] = "Forms";
+        if(is_null($slug)){
+            show_404();
+        }
 
-        $data['js_foot'] = array('jquery.dataTables.min', 'dataTables.bootstrap4.min');
+        $query = $this->db->get_where('forms', array('slug' => $slug), 1);
 
-        $this->load->frontend('list', $data);
+        if($query->num_rows() == 0){
+            show_404();
+        }
+
+        $this->load->library('form');
+
+        $form = $query->row();
+
+        $query = $this->db->get_where('fields', array('form_id' => $form->id));
+
+        $this->form->open('record/entry/'.$form->slug);
+        $this->form->hidden('form_id', $form->id);
+        //->html('<h3>'.$cube->name.'</h3>')
+        //->html($cube->description.'<hr>');
+        //->text('username','Username', 'trim|required|max_length[60]')
+        //->password('password','Password', 'trim|required|max_length[100]')
+
+        foreach ($query->result() as $row) {
+            
+            if($row->type == 'text'){
+                $this->form->text($row->identifier, $row->label , $row->validation_rule);
+            }
+
+            if($row->type == 'textarea'){
+                $this->form->textarea($row->identifier, $row->label , $row->validation_rule);
+            }
+
+            if($row->type == 'multiple'){
+                $this->form->radio($row->identifier, $row->label , array('' => 'sss','dd' => 'ddd'), $row->validation_rule);
+            }
+
+            if($row->type == 'check'){
+                $this->form->form_checkbox($row->identifier, $row->label , array('' => 'sss','dd' => 'ddd'), $row->validation_rule);
+            }
+
+        }
+
+
+
+        $this->form->submit('Save')
+        //->add_class('btn btn-success')
+        //->onsuccess('redirect', '/data/record?id=1')
+        ->model('record_model', 'save_data');
+
+        $data['form'] = $this->form->get();
+       // $data['errors'] = $this->form->errors;
+
+        $this->load->frontend('entry', $data);
        
     }
 
@@ -157,46 +205,6 @@ class Form extends CI_Controller {
         $data['form'] = $form;
 
         $this->load->frontend('edit', $data);
-       
-    }
-
-    public function delete(){
-
-        $slug = $this->uri->segment(3);
-
-        if(is_null($slug)){
-            show_404();
-        }
-
-        $query = $this->db->get_where('forms', array('slug' => $slug), 1);
-
-        if($query->num_rows() == 0){
-            show_404();
-        }
-
-        $form = $query->row();
-     
-
-       if($this->db->table_exists($form->slug) && $this->db->count_all($form->slug) != 0){
-            show_error("You can not delete this form. Please backup and delete form data first.", 200, $heading = 'An Error Was Encountered');
-       }
-
-       if($this->db->table_exists($form->slug)){
-        $this->load->dbforge();
-        $this->dbforge->drop_table($form->slug);
-       }
-
-        
-       
-       
-
-
-       $this->db->where('id', $form->id);
-       $this->db->delete('forms');
-
-       $this->session->set_flashdata('success_message', 'Form deleted successfully.');
-
-       redirect('form');
        
     }
 
