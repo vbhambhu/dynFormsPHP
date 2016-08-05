@@ -25,23 +25,37 @@
 
         <div class="form-group">
           <label>Field type</label>
-          <select class="form-control" ng-model="field.data_attrs.type" ng-init="field.data_attrs.type='VARCHAR'">
+          <select class="form-control" ng-model="field.validation.type" ng-init="field.validation.type='VARCHAR'">
 				<option value="VARCHAR">String</option>
+				<option value="DECIMAL">Decimal</option>
 				<option value="INT">Numeric</option>
 				<option value="DATETIME">Date and time</option>
 			</select>
         </div>
 
 
-        <div ng-if="field.data_type == 'DATETIME'">
+        <div ng-if="field.validation.type == 'DATETIME'">
 			<div class="form-group">
 	          <label>Date time format</label>
-		          <select class="form-control" ng-model="field.validation.dateFormat" ng-init="field.validation.dateFormat='D-M-Y'">
-						<option value="D-M-Y">Date (D-M-Y)</option>
-						<option value="D-M-Y H:M">Datetime (D-M-Y H:M:S)</option>
-						<option value="M-D-Y">Timestamp (M-D-Y)</option>
-						<option value="HH:MM">Time (HH:MM)</option>
-						<option value="Y-M-D">Year (Y)</option>
+		          <select class="form-control" ng-model="field.validation.dateFormat" ng-init="field.validation.format='DATETIME'">
+						<option value="DATE">Date (D-M-Y)</option>
+						<option value="DATETIME">Datetime (D-M-Y H:M:S)</option>
+						<option value="TIMESTAMP">Timestamp (M-D-Y)</option>
+						<option value="TIME">Time (HH:MM)</option>
+						<option value="YEAR">Year (Y)</option>
+					</select>
+	        </div>
+        </div>
+
+         <div ng-if="field.validation.type == 'DECIMAL'">
+			<div class="form-group">
+	          <label>Fraction</label>
+		          <select class="form-control" ng-model="field.validation.decimalFormat" ng-init="field.validation.format='2'">
+						<option value="1">1 (23.1)</option>
+						<option value="2">2 (23.12)</option>
+						<option value="3">3 (23.123)</option>
+						<option value="4">4 (23.1234)</option>
+						<option value="5">5 (23.12345)</option>
 					</select>
 	        </div>
         </div>
@@ -64,37 +78,66 @@
         </div>
 
 
-        <button type="button" class="btn btn-primary btn-sm">Add validation rules</button>
+        <div>Add validation rules (optional)</div>
+        <hr>
 
         <div ng-if="field.data_attrs.type == 'VARCHAR'">
 
         <div class="row">
 
-	        <div class="col-xs-3">
+	        <div class="col-xs-6">
+
+
 		        <div class="checkbox">
 					<label><input type="checkbox" ng-click="updateValidation(field)" ng-model="field.validation.min_length"> Min length</label>
 				</div>
+
+				<div ng-if="field.validation.min_length">
+					<input type="text" ng-model="field.validation.min_length_val"> 
+				</div>
+
+
 				<div class="checkbox">
 					<label><input type="checkbox" ng-model="field.validation.max_length"> Max length</label>
 				</div>
+
+				<div ng-if="field.validation.max_length">
+					<input type="text" ng-model="field.validation.max_length_val"> 
+				</div>
+
+
 				<div class="checkbox">
 					<label><input type="checkbox" ng-model="field.validation.exact_length"> Exact length</label>
 				</div>
+				<div ng-if="field.validation.exact_length">
+					<input type="text" ng-model="field.validation.exact_length_val" /> 
+				</div>
+
 			</div>
 
-			<div class="col-xs-3">
+			<div class="col-xs-6">
 		        <div class="checkbox">
 					<label><input type="checkbox" ng-model="field.validation.equal_to"> Equal to</label>
 				</div>
+
+				<div ng-if="field.validation.equal_to">
+					<input type="text" ng-model="field.validation.equal_to_val"> 
+				</div>
+
 				<div class="checkbox">
 					<label><input type="checkbox" ng-model="field.validation.not_equal_to"> Not equal to</label>
 				</div>
+
+				<div ng-if="field.validation.not_equal_to">
+					<input type="text" ng-model="field.validation.not_equal_to_val"> 
+				</div>
+
 				<div class="checkbox">
 					<label><input type="checkbox" ng-model="field.validation.alpha"> alpha</label>
 				</div>
 			</div>
 
-			<div class="col-xs-3">
+			<div class="col-xs-6">
 		        <div class="checkbox">
 					<label><input type="checkbox" ng-model="field.validation.alpha_numeric"> alpha_numeric</label>
 				</div>
@@ -106,7 +149,7 @@
 				</div>
 			</div>
 
-			<div class="col-xs-3">
+			<div class="col-xs-6">
 		        <div class="checkbox">
 					<label><input type="checkbox" ng-model="field.validation.valid_url"> valid_url</label>
 				</div>
@@ -213,16 +256,7 @@
         {{field.validation_rule}}
 
         <hr>
-        <div ng-repeat="validation_rule in field.validation_array">
-
-        	<p>{{validation_rule.rule}} 
-
-        	<span ng-if="validation_rule.value">
-        	<input type="text" value="{{validation_rule.value}}" />
-        	</span>
-
-        	</p>
-      	</div>
+        
 
 
 

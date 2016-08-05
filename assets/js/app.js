@@ -41,7 +41,7 @@ app.controller('formEditCtrl', function($scope,$http) {
     $http.get('/api/form/searchById', 
     { params: { id : fromId }}).then(function successCallback(response) {
 
-    console.log(response);
+      //console.log(response);
 
       $scope.form.id = response.data.id;
       $scope.form.name = response.data.name;
@@ -50,61 +50,11 @@ app.controller('formEditCtrl', function($scope,$http) {
       $scope.lastAddedID = response.data.fields.length;
       
 
-      $scope.createValidationArray();
-
     }, function errorCallback(response) {
     // called asynchronously if an error occurs
     // or server returns response with an error status.
     });
 
-
-    $scope.createValidationArray = function () {
-
-
-     // if(!field.validation_array)
-
-      for(var i = 0; i < $scope.form.fields.length; i++){
-
-          var validation_array = new Array();
-          var rule = $scope.form.fields[i].validation_rule;
-          var ruleArr = rule.split("|");
-
-          $scope.form.fields[i].validation = [];
-
-          for(key in ruleArr){
-             if(ruleArr[key].includes("[")){
-              
-              var key1 = ruleArr[key].substring(0,ruleArr[key].lastIndexOf("["));
-              var val = ruleArr[key].substring(ruleArr[key].lastIndexOf("[")+1,ruleArr[key].lastIndexOf("]"));
-              validation_array.push({"rule": key1, 'value': val});
-              $scope.form.fields[i].validation[key1] = true;
-
-              //console.log(ruleArr[key].lastIndexOf("["));
-                
-             } else {
-                if(ruleArr[key] != "required" ){
-                  validation_array.push({"rule": ruleArr[key]});
-                  var tt = ruleArr[key];
-                   $scope.form.fields[i].validation[tt] = true;
-                }
-                
-             }
-          }
-
-          console.log(validation_array);
-
-
-          //$scope.form.fields[i].validation = {};
-          //$scope.form.validation = ruleArr[key];
-
-
-          $scope.form.fields[i].validation_array = validation_array;
-
-         
-      }
-
-
-    }
 
 
     $scope.saveForm = function () {
@@ -141,7 +91,7 @@ app.controller('formEditCtrl', function($scope,$http) {
             "is_required" : true,
             "default_value" : null,
             "help_text" :null,
-            "validation" :false,
+            "validation" : {type: "VARCHAR", format: 255},
             "validation_rule" :null,
             "validation_rule" : $scope.form.id
       };
@@ -156,14 +106,7 @@ app.controller('formEditCtrl', function($scope,$http) {
     }
 
 
-    // $scope.updateValidation = function (field){
-
-    //   if(field.validation.status == false){
-    //     delete field.validation;
-    //     field.validation = {status: false};
-    //   }
-
-    // }
+  
 
 
   //deletes particular field on button click
@@ -198,34 +141,36 @@ app.controller('formEditCtrl', function($scope,$http) {
 
     $scope.updateValidation = function (field){
 
-       if(!field.validation_array)
-            field.validation_array = new Array();
+      console.log(field);
 
-      if("min_length" in field.validation){
+      //  if(!field.validation_array)
+      //       field.validation_array = new Array();
 
-         var newField = {
-            "rule" : "min_length",
-            "value" : 50
-        };
+      // if("min_length" in field.validation){
 
-        if(field.validation.min_length){
-          field.validation_array.push(newField);
-        } else{
+      //    var newField = {
+      //       "rule" : "min_length",
+      //       "value" : 50
+      //   };
 
-          //delete field.validation["min_length"];
-          //field.validation_array.splice(i, 1);
-        }
+      //   if(field.validation.min_length){
+      //     field.validation_array.push(newField);
+      //   } else{
+
+      //     //delete field.validation["min_length"];
+      //     //field.validation_array.splice(i, 1);
+      //   }
 
         
-      }
-      console.log(field.validation);
+      // }
+      // console.log(field.validation);
       
 
-       for(var i = 0; i < field.validation.length; i++){
+      //  for(var i = 0; i < field.validation.length; i++){
 
-        console.log(field.validation[i]);
+      //   console.log(field.validation[i]);
             
-        }
+      //   }
        
     }
 
